@@ -14,7 +14,11 @@ public class PinballGame : MonoBehaviour
     public int score = 0;
 
     public float plungerSpeed = 100;
-    public AudioSource plungerSound;
+
+    public AudioSource audioPlayer;
+    public AudioClip plungerClip;
+    public AudioClip soundtrackClip;
+    public AudioClip gameoverClip;
 
     public KeyCode newGameKey;
     public KeyCode plungerKey;
@@ -33,7 +37,12 @@ public class PinballGame : MonoBehaviour
         ball = GameObject.Find("Ball");
         ball.SetActive(false);
 
-        plungerSound = GetComponent<AudioSource>();
+        audioPlayer = GetComponent<AudioSource>();
+
+        audioPlayer.loop = true;
+        audioPlayer.clip = soundtrackClip;
+        audioPlayer.volume = 0.3f;
+        audioPlayer.Play();
     }
 
     private void Update()
@@ -49,7 +58,11 @@ public class PinballGame : MonoBehaviour
 
         if ((ball.activeSelf == false) && (ballsLeft == 0))
         {
-            gameOver = true;
+            if (gameOver == false)
+            {
+                gameOver = true;
+                audioPlayer.PlayOneShot(gameoverClip);
+            }
         }
 
         SetText();
@@ -108,7 +121,7 @@ public class PinballGame : MonoBehaviour
             ball.transform.position = plunger.transform.position;
             ballsLeft = ballsLeft - 1;
 
-            plungerSound.Play();
+            audioPlayer.PlayOneShot(plungerClip);
         }
     }
 }
